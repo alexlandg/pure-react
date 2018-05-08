@@ -134,7 +134,7 @@ npm install pure-react --save
     text(state.counter)
 
   const scene = (color, state, store) =>
-    view(style.scene(color), {animated,
+    view(style.scene(color), {
       update: store.update, id: 'counter',
     },
       () => counter(state)()
