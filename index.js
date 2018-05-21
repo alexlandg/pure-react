@@ -57,7 +57,9 @@ const updatekeys = ['id', 'from', 'update', 'willmount', 'didmount', 'willupdate
 const justcomponent = (element, style, props, children) => {
   let haschild = children && ((children instanceof Array && children.length > 0) || typeof children == 'string' || children.type && true)
 
-  return React.createElement(element, {style, ...props, ...haschild ? {children} : {}})
+  let elementprops = Object.assign({}, {style}, props, haschild ? {children} : {})
+
+  return React.createElement(element, elementprops)
 }
 
 const component = (id, style, {props = {}, children}) => {
@@ -71,7 +73,9 @@ const component = (id, style, {props = {}, children}) => {
       }
     })
 
-    return React.createElement(Component, {...updateprops, children: () => justcomponent(id, style, props, carry(children))})
+    let componentprops = Object.assign({}, updateprops, {children: () => justcomponent(id, style, props, carry(children))})
+
+    return React.createElement(Component, componentprops)
   }
 
   else return justcomponent(id, style, props, carry(children))
@@ -111,8 +115,8 @@ const select = (style, ...props) => () => component('select', style, split(props
 const option = (style, ...props) => () => component('option', style, split(props))
 const label = (style, ...props) => () => component('label', style, split(props))
 
-const img = (src, style, props) => () => component('img', style, {props: {src, ...props}})
-const image = (src, style, props) => () => component('img', style, {props: {src, ...props}})
+const img = (src, style, props) => () => component('img', style, {props: Object.assign(src, props)})
+const image = (src, style, props) => () => component('img', style, {props: Object.assign(src, props)})
 const canvas = (style, ...props) => () => component('canvas', style, split(props))
 const picture = (style, ...props) => () => component('picture', style, split(props))
 const audio = (style, ...props) => () => component('audio', style, split(props))
