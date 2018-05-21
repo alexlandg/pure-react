@@ -1,5 +1,5 @@
 
-import React from 'react'
+const React = require('react')
 
 const random = () => Math.random()
 
@@ -47,4 +47,4 @@ class Component extends React.Component {
   }
 }
 
-export default Component
+module.exports = Component
