@@ -47,7 +47,7 @@ const scenes = (state, store) =>
 
 const handle = (id, i, state, store) =>
   button(id, style.button, {
-    onPress: () => {
+    onClick: () => {
       state.counter += i
       store.update.do('counter')
     }
