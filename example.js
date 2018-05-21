@@ -1,5 +1,5 @@
 
-import {react, updates, view, text, button} from 'pure-react'
+const {react, updates, view, text, button} = require('pure-react')
 
 const style = {
   wrap: {
