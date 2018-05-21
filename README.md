@@ -11,7 +11,7 @@ npm install pure-react --save
 ## Basic usage
 
 ```javascript
-  import {view, text} from 'pure-react'
+  const {view, text} = require('pure-react')
 
   let style = {...}
 
@@ -27,7 +27,7 @@ npm install pure-react --save
   Controls app state
 
   ```javascript
-    import {updates, view, button, text} from 'pure-react'
+    const {updates, view, button, text} = require('pure-react')
 
     let store = {
       update : updates()
@@ -58,7 +58,7 @@ npm install pure-react --save
       willunmount: () => {}  // component will unmount
     })
   ```
-  
+
   `update.do(id, [from])`
   ```javascript
     update.do('app') //update full group
@@ -69,39 +69,39 @@ npm install pure-react --save
   ```javascript
     update.sub('app', ['counter']) // sub component
   ```
-   
+
   `update.unsub(id, [from])`
   ```javascript
     update.unsub('app', ['counter']) // unsub component
   ```
-  
+
   `update.list`
   ```javascript
     console.log(update.list) // Array of subscribers
   ```
 
   ### Components
-  
+
   `view(style, props, children)`  if you haven't props, just use `view(style, children)`
-      
+
   `button(children, style, props)` or `button(style, props, children)`
-    
+
   `text(children, style, props)`
-    
+
   `textinput(style, props)`
-    
+
   `image(style, props)`
-  
+
   `component(style, props)` or `component(props)` if component don't have style
 
-  All React components available in lowercase 
-  
+  All React apis and components available in lowercase
+
 
   ## Example
   ```javascript
-  
-  import {react, updates, view, text, button} from 'pure-react'
-  
+
+  const {react, updates, view, text, button} = require('pure-react')
+
   const style = {
     wrap: {
       width: '100vw',
