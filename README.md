@@ -40,7 +40,7 @@ npm install pure-react --save
       },
         () => text(store.counter)(), //updatable component must be a function
         button('+', {}, {
-          onPress: () => {
+          onClick: () => {
             store.counter++
             store.update.do('app')
           }
@@ -148,7 +148,7 @@ npm install pure-react --save
 
   const handle = (id, i, state, store) =>
     button(id, style.button, {
-      onPress: () => {
+      onClick: () => {
         state.counter += i
         store.update.do('counter')
       }
