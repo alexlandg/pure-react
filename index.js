@@ -1,7 +1,7 @@
 
-import React from 'react'
+const React = require('react')
 
-import Component from './component'
+const Component = require('./component')
 
 const react = React
 
@@ -54,8 +54,11 @@ const swapbutton = (children, style, props) => {
 
 const updatekeys = ['id', 'from', 'update', 'willmount', 'didmount', 'willupdate', 'didupdate', 'willunmount']
 
-const justcomponent = (element, style, props, children) =>
-  React.createElement(element, {style, ...props, children})
+const justcomponent = (element, style, props, children) => {
+  let haschild = children && ((children instanceof Array && children.length > 0) || typeof children == 'string' || children.type && true)
+
+  return React.createElement(element, {style, ...props, ...haschild ? {children} : {}})
+}
 
 const component = (id, style, {props = {}, children}) => {
   if (props.update || props.willmount || props.didmount || props.willunmount) {
@@ -68,7 +71,7 @@ const component = (id, style, {props = {}, children}) => {
       }
     })
 
-    return <Component {...updateprops} children={() => justcomponent(id, style, props, carry(children))}/>
+    return React.createElement(Component, {...updateprops, children: () => justcomponent(id, style, props, carry(children))})
   }
 
   else return justcomponent(id, style, props, carry(children))
@@ -77,6 +80,8 @@ const component = (id, style, {props = {}, children}) => {
 
 const html = (style, ...props) => () => component('html', style, split(props))
 const head = (style, ...props) => () => component('head', style, split(props))
+const link = (...props) => () => component('link', {}, split(props))
+const script = (...props) => () => component('script', {}, split(props))
 const title = (style, ...props) => () => component('title', style, split(props))
 const body = (style, ...props) => () => component('body', style, split(props))
 const meta = (style, ...props) => () => component('meta', style, split(props))
@@ -157,9 +162,9 @@ const h5 = (children, style, props) => () => component('h5', style, {props, chil
 const h6 = (children, style, props) => () => component('h6', style, {props, children})
 
 
-export {
+module.exports = {
   updates, react,
-  html, head, title, body, meta, br, hr,
+  html, head, link, script, title, body, meta, br, hr,
   address, b, blockquote, code, i, s, small, strong, sub, sup, template, time,
   a, form, input, textarea, textinput, button, select, option, label,
   img, image, canvas, picture, audio, video,
