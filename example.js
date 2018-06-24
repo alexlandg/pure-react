@@ -1,5 +1,5 @@
 
-const {react, updates, view, text, button} = require('pure-react')
+const {react, update, view, text, button} = require('pure-react')
 
 const style = {
   wrap: {
@@ -32,46 +32,39 @@ const style = {
 const counter = (state) =>
   text(state.counter)
 
-const scene = (color, state, store) =>
-  view(style.scene(color), {
-    update: store.update, id: 'counter',
-  },
+const scene = (color, state) =>
+  view(style.scene(color), {id: 'counter'},
     () => counter(state)()
   )
 
-const scenes = (state, store) =>
+const scenes = (state) =>
   view(style.scenes,
-    scene('whitesmoke', state, store),
-    scene('pink', state, store)
+    scene('whitesmoke', state),
+    scene('pink', state)
   )
 
-const handle = (id, i, state, store) =>
+const handle = (id, i, state) =>
   button(id, style.button, {
     onClick: () => {
       state.counter += i
-      store.update.do('counter')
+      update.do('counter')
     }
   })
 
 
-const testapp = (store) => {
+const testapp = () => {
   let state = {
     counter: 0
   }
 
   return view(style.wrap,
-    scenes(state, store),
-    handle('counter++', 1, state, store),
-    handle('counter--', -1, state, store),
+    scenes(state),
+    handle('counter++', 1, state),
+    handle('counter--', -1, state),
   )
 }
 
 
-let store = {
-  update: updates()
-}
-
-
 export default class App extends react.Component {
-  render = () => testapp(store)()
+  render = () => testapp()()
 }
