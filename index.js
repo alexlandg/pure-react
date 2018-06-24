@@ -22,6 +22,9 @@ const updates = (arr = []) => ({
       : arr[id] = []
 })
 
+const update = updates()
+
+const store = {}
 
 const carry = arr =>
   arr instanceof Array
@@ -40,7 +43,12 @@ const swapbutton = (children, style, props) => {
 
   if (typeof children !== 'string') {
     flag = true
-    [children, style, props] = [props, children, style]
+
+    let _ = style
+
+    style = children
+    children = props
+    props = _
   }
 
   return flag
@@ -63,7 +71,7 @@ const justcomponent = (element, style, props, children) => {
 }
 
 const component = (id, style, {props = {}, children}) => {
-  if (props.update || props.willmount || props.didmount || props.willunmount) {
+  if (props.id || props.update || props.willmount || props.didmount || props.willunmount) {
     let updateprops = {}
 
     updatekeys.forEach(key => {
@@ -72,6 +80,8 @@ const component = (id, style, {props = {}, children}) => {
         delete props[key]
       }
     })
+
+    if (!updateprops.update) updateprops.update = update
 
     let componentprops = Object.assign({}, updateprops, {children: () => justcomponent(id, style, props, carry(children))})
 
@@ -167,7 +177,7 @@ const h6 = (children, style, props) => () => component('h6', style, {props, chil
 
 
 module.exports = {
-  updates, react,
+  update, store, react,
   html, head, link, script, title, body, meta, br, hr,
   address, b, blockquote, code, i, s, small, strong, sub, sup, template, time,
   a, form, input, textarea, textinput, button, select, option, label,
