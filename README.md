@@ -2,10 +2,15 @@
 
 Wrapper for React to write code in more elegant, functional style and speed up development.
 
-## Installation
+Built-in State Control, so you don’t need redux/mobx anymore.
 
+## Installation
 ```
-npm install pure-react --save
+yarn add pure-react
+```
+or
+```
+npm i pure-react --save
 ```
 
 ## Basic usage
@@ -24,30 +29,47 @@ npm install pure-react --save
 ## Documentation
 
   ### Updates
-  Controls app state
+  Controls app state.
+  
+  All you need is add ```{id: '...'}``` to component props and then ```update.do(id)``` to make update.
 
   ```javascript
-    const {updates, view, button, text} = require('pure-react')
+    const {update, view, button, text} = require('pure-react')
 
-    let store = {
-      update : updates()
-      counter: 0
-    }
 
-    const app = () =>
-      view({}, {
-        update: store.update, id: 'app', from: 'counter'
-      },
-        () => text(store.counter)(), //updatable component must be a function
+    const app = () => {
+      let state = {
+        counter: 0
+      }
+
+      return view({}, {id: 'app'}, //or view({}, {update, id: 'app'})
+        () => text(state.counter)(), //updatable component must be a function
         button('+', {}, {
           onClick: () => {
-            store.counter++
-            store.update.do('app')
+            state.counter++
+            update.do('app')
           }
         })
-
+      )
+    }
+  ```
+  
+  Add prop ```{from: '...'}``` for partial updates.
+  
+  For example, you have component 'header' with childs 'name', 'ready', 'score', 'notification', etc.
+  
+  ```javascript
+    const header = () =>
+      view({},
+        view({}, {id: 'header', from: 'name'})
+        view({}, {id: 'header', from: 'ready'})
+        view({}, {id: 'header', from: 'score'})     
+        view({}, {id: 'header', from: 'notification'})
       )
   ```
+  
+  Now, you can update full group by ```update.do('header')``` or partially ```update.do('header', ['ready', 'score'])```
+
   Life-cycle:
   ```javascript
     view({}, {
@@ -65,42 +87,49 @@ npm install pure-react --save
     update.do('app', ['counter', 'name']) // update some of group
   ```
 
-  `update.sub(id, [from])`
-  ```javascript
-    update.sub('app', ['counter']) // sub component
-  ```
-
-  `update.unsub(id, [from])`
-  ```javascript
-    update.unsub('app', ['counter']) // unsub component
-  ```
-
   `update.list`
   ```javascript
     console.log(update.list) // Array of subscribers
   ```
 
+
+  ### Store
+  Global object for your application.
+  ```javascript
+    const {store, text} = require('pure-react')
+
+    store.settings = {...}
+    store.user = {...}
+    store.version = {...}
+
+    const app = () =>
+      text(store.settings.value)
+  ```
+
+
   ### Components
+  All React components and apis available in lowercase.
 
-  `view(style, props, children)`  if you haven't props, just use `view(style, children)`
-
+  `view(style, props, children)`  if you haven't props, just use `view(style, children)` *//or div*
+  
   `button(children, style, props)` or `button(style, props, children)`
+  
+  `text(children, style, props)` *//or p*
+  
+  `textinput(style, props)` *//or textarea*
+  
+  `image(style, props)` *//or img*
+  
+  `...`
+  
+  `component(style, props, children)` or `component(props)`
 
-  `text(children, style, props)`
-
-  `textinput(style, props)`
-
-  `image(style, props)`
-
-  `component(style, props)` or `component(props)` if component don't have style
-
-  All React apis and components available in lowercase
 
 
   ## Example
   ```javascript
 
-  const {react, updates, view, text, button} = require('pure-react')
+  const {react, update, view, text, button} = require('pure-react')
 
   const style = {
     wrap: {
@@ -133,47 +162,39 @@ npm install pure-react --save
   const counter = (state) =>
     text(state.counter)
 
-  const scene = (color, state, store) =>
-    view(style.scene(color), {
-      update: store.update, id: 'counter',
-    },
+  const scene = (color, state) =>
+    view(style.scene(color), {id: 'counter'},
       () => counter(state)()
     )
 
-  const scenes = (state, store) =>
+  const scenes = (state) =>
     view(style.scenes,
-      scene('whitesmoke', state, store),
-      scene('pink', state, store)
+      scene('whitesmoke', state),
+      scene('pink', state)
     )
 
-  const handle = (id, i, state, store) =>
+  const handle = (id, i, state) =>
     button(id, style.button, {
       onClick: () => {
         state.counter += i
-        store.update.do('counter')
+        update.do('counter')
       }
     })
 
 
-  const testapp = (store) => {
+  const testapp = () => {
     let state = {
       counter: 0
     }
 
     return view(style.wrap,
-      scenes(state, store),
-      handle('counter++', 1, state, store),
-      handle('counter--', -1, state, store),
+      scenes(state),
+      handle('counter++', 1, state),
+      handle('counter--', -1, state),
     )
   }
 
-
-  let store = {
-    update: updates()
-  }
-
-
   export default class App extends react.Component {
-    render = () => testapp(store)()
+    render = () => testapp()()
   }
   ```
